@@ -1,0 +1,11 @@
+#所有的可执行文件
+/**/*.exe
+
+#keil当中不能忽略（汇编）
+!/**/MDK-ARM/*.uvoptx
+!/**/MDK-ARM/*.uvoptjx
+!/**/MDK-ARM/startup_*.s
+
+#vscode忽略
+/**/.vscode
+/**/workspace.code-workspace
