@@ -72,7 +72,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  int last_pin,current_pin;
+  
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
