@@ -1,0 +1,25 @@
+--cpu Cortex-M3
+"pwmbreath\startup_stm32f103xb.o"
+"pwmbreath\main.o"
+"pwmbreath\gpio.o"
+"pwmbreath\tim.o"
+"pwmbreath\stm32f1xx_it.o"
+"pwmbreath\stm32f1xx_hal_msp.o"
+"pwmbreath\stm32f1xx_hal_gpio_ex.o"
+"pwmbreath\stm32f1xx_hal_tim.o"
+"pwmbreath\stm32f1xx_hal_tim_ex.o"
+"pwmbreath\stm32f1xx_hal.o"
+"pwmbreath\stm32f1xx_hal_rcc.o"
+"pwmbreath\stm32f1xx_hal_rcc_ex.o"
+"pwmbreath\stm32f1xx_hal_gpio.o"
+"pwmbreath\stm32f1xx_hal_dma.o"
+"pwmbreath\stm32f1xx_hal_cortex.o"
+"pwmbreath\stm32f1xx_hal_pwr.o"
+"pwmbreath\stm32f1xx_hal_flash.o"
+"pwmbreath\stm32f1xx_hal_flash_ex.o"
+"pwmbreath\stm32f1xx_hal_exti.o"
+"pwmbreath\system_stm32f1xx.o"
+--strict --scatter "PWMbreath\PWMbreath.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "PWMbreath.map" -o PWMbreath\PWMbreath.axf
