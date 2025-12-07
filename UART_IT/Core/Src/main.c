@@ -44,9 +44,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-uint8_t Rxtext[10];
-uint8_t Txtest[10]="Hello lyy ";
-
+uint8_t Rxtext[6];
+uint8_t b = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,17 +97,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    HAL_UART_Transmit_IT(&huart1,Txtest,10);
-	HAL_Delay(1000);
-    
-
-    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
-
+}
 
 /**
   * @brief System Clock Configuration
@@ -149,20 +143,27 @@ void SystemClock_Config(void)
   }
 }
 
-/* USER CODE BEGIN 4 */
+/* USER CODE BEGIN */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-  if(huart==&huart1)
+ {
+  if (huart==&huart1)
   {
-    if(Rxtext[0]=='1')
+    if (Rxtext[b] =='\n' || b >= 5)
     {
-      HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
-	  HAL_UART_Transmit_IT(&huart1,Rxtext,10);
+      HAL_UART_Transmit_IT(&huart1,Rxtext,b);
+      b=0;
+      HAL_UART_Receive_IT(&huart1,Rxtext,1);
     }
-    HAL_UART_Receive_IT(&huart1,Rxtext,1);
+    else
+    {
+      b++;
+      HAL_UART_Receive_IT(&huart1,&Rxtext[b],1);
+    }
+    
   }
-
+  
 }
+
 /* USER CODE END 4 */
 
 /**
