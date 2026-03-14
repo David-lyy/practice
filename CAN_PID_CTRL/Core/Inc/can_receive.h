@@ -31,8 +31,13 @@ typedef struct
     int16_t last_ecd;
 } motor_measure_t;
 
+extern motor_measure_t motor_chassis[5];
+extern uint8_t send_buf[4];
 extern uint8_t CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
 
 extern const motor_measure_t *get_chassis_motor_measure_point(uint8_t i);
+extern void udata(uint8_t i);
+extern void jump_check_up(void);
+extern void jump_check_down(void);
 
 #endif

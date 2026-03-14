@@ -30,6 +30,7 @@ extern "C" {
 
 /* USER CODE BEGIN Includes */
 #include "sbus.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 extern UART_HandleTypeDef huart1;
@@ -37,15 +38,14 @@ extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN Private defines */
-static receive_o[9];
-static receive_h[3];
-extern fp32 PID[3] = {5.0f,0.1f,0.2f};
+static uint8_t receive_o[9];
+static uint8_t receive_h[3];
+extern fp32 PID[3];
 /* USER CODE END Private defines */
 
 void MX_USART1_UART_Init(void);
 void MX_USART3_UART_Init(void);
-void read_data(void);
-int cul(int num,int n);
+
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */

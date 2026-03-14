@@ -31,3 +31,6 @@ can_pid_ctrl\usart.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ra
 can_pid_ctrl\usart.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 can_pid_ctrl\usart.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 can_pid_ctrl\usart.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+can_pid_ctrl\usart.o: ../Core/Inc/sbus.h
+can_pid_ctrl\usart.o: ../Core/Inc/struct_typedef.h
+can_pid_ctrl\usart.o: C:\Users\liu\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

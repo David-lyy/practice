@@ -33,4 +33,10 @@ can_pid_ctrl\main.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 can_pid_ctrl\main.o: ../Core/Inc/can.h
 can_pid_ctrl\main.o: ../Core/Inc/dma.h
 can_pid_ctrl\main.o: ../Core/Inc/usart.h
+can_pid_ctrl\main.o: ../Core/Inc/sbus.h
+can_pid_ctrl\main.o: ../Core/Inc/struct_typedef.h
+can_pid_ctrl\main.o: C:\Users\liu\AppData\Local\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 can_pid_ctrl\main.o: ../Core/Inc/gpio.h
+can_pid_ctrl\main.o: ../Core/Inc/can_receive.h
+can_pid_ctrl\main.o: ../Core/Inc/pid.h
+can_pid_ctrl\main.o: ../Core/Inc/bsp_can.h

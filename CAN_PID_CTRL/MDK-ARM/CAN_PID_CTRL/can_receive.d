@@ -32,3 +32,4 @@ can_pid_ctrl\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_fl
 can_pid_ctrl\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 can_pid_ctrl\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
 can_pid_ctrl\can_receive.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
+can_pid_ctrl\can_receive.o: ../Core/Inc/sbus.h

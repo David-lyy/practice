@@ -21,10 +21,10 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-
+fp32 PID[3] = {5.0f,0.1f,0.2f};
 /* USER CODE END 0 */
 
-UART_HandleTypeDefhuart1;
+UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart3;
 DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart1_tx;
@@ -123,7 +123,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     hdma_usart1_rx.Init.MemInc = DMA_MINC_ENABLE;
     hdma_usart1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
     hdma_usart1_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma_usart1_rx.Init.Mode = DMA_NORMAL;
+    hdma_usart1_rx.Init.Mode = DMA_CIRCULAR;
     hdma_usart1_rx.Init.Priority = DMA_PRIORITY_LOW;
     hdma_usart1_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
     if (HAL_DMA_Init(&hdma_usart1_rx) != HAL_OK)
@@ -151,6 +151,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 
     __HAL_LINKDMA(uartHandle,hdmatx,hdma_usart1_tx);
 
+    /* USART1 interrupt Init */
+    HAL_NVIC_SetPriority(USART1_IRQn, 2, 0);
+    HAL_NVIC_EnableIRQ(USART1_IRQn);
   /* USER CODE BEGIN USART1_MspInit 1 */
 
   /* USER CODE END USART1_MspInit 1 */
@@ -184,7 +187,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     hdma_usart3_rx.Init.MemInc = DMA_MINC_ENABLE;
     hdma_usart3_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
     hdma_usart3_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma_usart3_rx.Init.Mode = DMA_NORMAL;
+    hdma_usart3_rx.Init.Mode = DMA_CIRCULAR;
     hdma_usart3_rx.Init.Priority = DMA_PRIORITY_LOW;
     hdma_usart3_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
     if (HAL_DMA_Init(&hdma_usart3_rx) != HAL_OK)
@@ -212,6 +215,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 
     __HAL_LINKDMA(uartHandle,hdmatx,hdma_usart3_tx);
 
+    /* USART3 interrupt Init */
+    HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(USART3_IRQn);
   /* USER CODE BEGIN USART3_MspInit 1 */
 
   /* USER CODE END USART3_MspInit 1 */
@@ -238,6 +244,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     /* USART1 DMA DeInit */
     HAL_DMA_DeInit(uartHandle->hdmarx);
     HAL_DMA_DeInit(uartHandle->hdmatx);
+
+    /* USART1 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(USART1_IRQn);
   /* USER CODE BEGIN USART1_MspDeInit 1 */
 
   /* USER CODE END USART1_MspDeInit 1 */
@@ -259,6 +268,9 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     /* USART3 DMA DeInit */
     HAL_DMA_DeInit(uartHandle->hdmarx);
     HAL_DMA_DeInit(uartHandle->hdmatx);
+
+    /* USART3 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(USART3_IRQn);
   /* USER CODE BEGIN USART3_MspDeInit 1 */
 
   /* USER CODE END USART3_MspDeInit 1 */
@@ -266,32 +278,17 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
+uint8_t receive_o[9] = {0};
+uint8_t receive_h[3] = {0};
+int cul(int num,int n)
 {
-    
-    if (UartHandle->Instance == USART3)
-    {
-      if (sbus_data[0] == 0x0F && (sbus_data[24] == 0x00 || sbus_data[24] == 0xFF))
-      {      
-        sbus_decode(sbus_data, g_sbus_channels);
-        cul_rpm(g_sbus_channels,set_speed);
-      }
-      else
-      {        
-        memset(g_sbus_channels, 0, sizeof(g_sbus_channels));   //clear channels
-      }
-            
-      HAL_UART_Receive_DMA(&huart3, sbus_data, 25);
-    }
-    else if(UartHandle->Instance == USART1)
-    {
-      read_data();
-      for(int i = 0;i<3;i++)
-      {
-        PID[i] = (fp32)(receive_h[i]);
-      }
-      HAL_UART_Receive_DMA(&huart1,receive_o,9);
-    }
+  int result = 1;
+  for (int i = 0;i < n;i++)
+  {
+    result *= num;
+  }
+  return result;
+  
 }
 void read_data(void)
 {
@@ -328,13 +325,32 @@ void read_data(void)
     i++;
   }
 }
-int cul(int num,int n)
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
-  int result = 1;
-  for (int i = 0;i < n;i++)
-  {
-    result *= num;
-  }
-  return result;
+    
+    if (UartHandle->Instance == USART3)
+    {
+      if (sbus_data[0] == 0x0F && (sbus_data[24] == 0x00 || sbus_data[24] == 0xFF))
+      {      
+        sbus_decode(sbus_data, g_sbus_channels);
+        cul_rpm(g_sbus_channels,set_speed);
+      }
+      else
+      {        
+        memset(g_sbus_channels, 0, sizeof(g_sbus_channels));   //clear channels
+      }
+            
+      HAL_UART_Receive_DMA(&huart3, sbus_data, 25);
+    }
+    else if(UartHandle->Instance == USART1)
+    {
+      read_data();
+      for(int i = 0;i<3;i++)
+      {
+        PID[i] = (fp32)(receive_h[i]);
+      }
+      HAL_UART_Receive_DMA(&huart1,receive_o,9);
+    }
 }
+
 /* USER CODE END 1 */
